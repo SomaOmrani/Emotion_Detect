@@ -49,7 +49,8 @@ COPY . /app
 # Change the Debian mirror
 RUN sed -i 's|http://deb.debian.org/debian|http://ftp.us.debian.org/debian|g' /etc/apt/sources.list
 
-RUN apt-get update && apt-get install -y \
+# Retry logic
+RUN apt-get update || apt-get update -o Acquire::Retries=3 && apt-get install -y \
     build-essential \
     portaudio19-dev \
     git \
@@ -73,4 +74,3 @@ RUN git lfs pull
 EXPOSE 8501
 
 CMD ["streamlit", "run", "app.py"]
-
